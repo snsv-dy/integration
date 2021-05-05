@@ -8,12 +8,12 @@ import org.junit.jupiter.api.Test;
 
 import io.restassured.http.ContentType;
 
-public class CreateUserTest extends FunctionalTests {
+class CreateUserTest extends FunctionalTests {
 
     private static final String USER_API = "/blog/user";
 
     @Test
-    public void createUserWithProperDataReturnsCreatedStatus() {
+    void createUserWithProperDataReturnsCreatedStatus() {
         JSONObject jsonObj = new JSONObject().put("email", "tracy1@domain.com");
         given().accept(ContentType.JSON)
                .header("Content-Type", "application/json;charset=UTF-8")

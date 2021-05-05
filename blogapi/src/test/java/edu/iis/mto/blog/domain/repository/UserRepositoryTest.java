@@ -1,27 +1,24 @@
 package edu.iis.mto.blog.domain.repository;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertThat;
 
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import edu.iis.mto.blog.domain.model.AccountStatus;
 import edu.iis.mto.blog.domain.model.User;
 
-@RunWith(SpringRunner.class)
 @DataJpaTest
-public class UserRepositoryTest {
+class UserRepositoryTest {
 
     @Autowired
     private TestEntityManager entityManager;
@@ -31,26 +28,26 @@ public class UserRepositoryTest {
 
     private User user;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         user = new User();
         user.setFirstName("Jan");
         user.setEmail("john@domain.com");
         user.setAccountStatus(AccountStatus.NEW);
     }
 
-    @Ignore
+    @Disabled
     @Test
-    public void shouldFindNoUsersIfRepositoryIsEmpty() {
+    void shouldFindNoUsersIfRepositoryIsEmpty() {
 
         List<User> users = repository.findAll();
 
         assertThat(users, hasSize(0));
     }
 
-    @Ignore
+    @Disabled
     @Test
-    public void shouldFindOneUsersIfRepositoryContainsOneUserEntity() {
+    void shouldFindOneUsersIfRepositoryContainsOneUserEntity() {
         User persistedUser = entityManager.persist(user);
         List<User> users = repository.findAll();
 
@@ -60,9 +57,9 @@ public class UserRepositoryTest {
                 equalTo(persistedUser.getEmail()));
     }
 
-    @Ignore
+    @Disabled
     @Test
-    public void shouldStoreANewUser() {
+    void shouldStoreANewUser() {
 
         User persistedUser = repository.save(user);
 

@@ -4,7 +4,7 @@ import org.junit.jupiter.api.BeforeAll;
 
 import io.restassured.RestAssured;
 
-public class FunctionalTests {
+abstract class FunctionalTests {
 
     @BeforeAll
     public static void setup() {
