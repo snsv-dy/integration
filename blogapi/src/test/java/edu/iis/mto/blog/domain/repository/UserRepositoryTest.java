@@ -4,6 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 
@@ -36,7 +37,6 @@ class UserRepositoryTest {
         user.setAccountStatus(AccountStatus.NEW);
     }
 
-    @Disabled
     @Test
     void shouldFindNoUsersIfRepositoryIsEmpty() {
 
@@ -45,19 +45,6 @@ class UserRepositoryTest {
         assertThat(users, hasSize(0));
     }
 
-    @Disabled
-    @Test
-    void shouldFindOneUsersIfRepositoryContainsOneUserEntity() {
-        User persistedUser = entityManager.persist(user);
-        List<User> users = repository.findAll();
-
-        assertThat(users, hasSize(1));
-        assertThat(users.get(0)
-                        .getEmail(),
-                equalTo(persistedUser.getEmail()));
-    }
-
-    @Disabled
     @Test
     void shouldStoreANewUser() {
 
@@ -66,4 +53,54 @@ class UserRepositoryTest {
         assertThat(persistedUser.getId(), notNullValue());
     }
 
+    @Test
+    void shouldFindOneUsersIfRepositoryContainsOneUserEntity() {
+        User persistedUser = entityManager.persist(user);
+        List<User> users = repository.findAll();
+
+
+        assertThat(users, hasSize(1));
+        assertThat(users.get(0)
+                        .getEmail(),
+                equalTo(persistedUser.getEmail()));
+    }
+
+    @Test
+    void searchingUserByFirstNameThatExistsInDatabase_shouldResultInSucces(){
+        User persistedUser = repository.save(user);
+        String firstName = "Jan";
+        List<User> results = repository.findByFirstNameContainingOrLastNameContainingOrEmailContainingAllIgnoreCase(firstName, "", "");
+
+        assertEquals(persistedUser, results.get(0));
+    }
+
+    @Test
+    void searchingUserByLastNameThatExistsInDatabase_shouldResultInSucces(){
+        String surname = "Jagiełło";
+        user.setLastName(surname);
+        User persistedUser = repository.save(user);
+        List<User> results = repository.findByFirstNameContainingOrLastNameContainingOrEmailContainingAllIgnoreCase("", surname, "");
+
+        assertEquals(persistedUser, results.get(0));
+    }
+
+    @Test
+    void searchingUserByEmailThatExistsInDatabase_shouldResultInSucces(){
+        User persistedUser = repository.save(user);
+        String email = "john@domain.com";
+        List<User> results = repository.findByFirstNameContainingOrLastNameContainingOrEmailContainingAllIgnoreCase("", "", email);
+
+        assertEquals(persistedUser, results.get(0));
+    }
+
+
+    @Test
+    void searchingUserNameThatDoesNotExistsInDatabase_shouldResultInFailure(){
+        User persistedUser = repository.save(user);
+        String firstName = "Kacper";
+        List<User> results = repository.findByFirstNameContainingOrLastNameContainingOrEmailContainingAllIgnoreCase(firstName, "notnull", "notnull");
+        System.out.println(results.isEmpty() + ", " + results.size());
+
+        assertThat("result list should be empty", results.isEmpty());
+    }
 }
